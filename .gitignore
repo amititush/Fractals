@@ -30,3 +30,10 @@
 *.exe
 *.out
 *.app
+
+.vs/
+pics/
+x64/
+stb_image*.h
+*.sln
+*.vcx*
