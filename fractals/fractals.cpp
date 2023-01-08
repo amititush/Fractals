@@ -43,14 +43,22 @@ const std::complex<double> I(0, 1);
 //#define WIDTH 2000
 //#define HEIGHT 1500
 
-#define WIDTH 2000
-#define HEIGHT 2000
+#define WIDTH 1000
+#define HEIGHT 1000
 
 // square
-float X_MIN = -1.25-0.01;
-float X_MAX = -1.25+0.01;
-float Y_MIN = -0.035-0.01;
-float Y_MAX = -0.035+0.01;
+/*
+float X_MIN = -1.25 - 0.001;
+float X_MAX = -1.25+0.001;
+float Y_MIN = -0.035-0.001;
+float Y_MAX = -0.035+0.001;
+*/
+
+// seahorse tail
+float X_MIN = -0.7435669 - 0.0022878;
+float X_MAX = -0.7435669 + 0.0022878;
+float Y_MIN = -0.1314023 - 0.0022878;
+float Y_MAX = -0.1314023 + 0.0022878;
 
 //float X_MIN = -2;
 //float X_MAX = 2;
@@ -96,39 +104,77 @@ void spectral_color(double& r, double& g, double& b, double l) // RGB <0,1> <- l
     else if ((l >= 475.0) && (l < 560.0)) { t = (l - 475.0) / (560.0 - 475.0); b = 0.7 - (t)+(0.30 * t * t); }
 }
 
+double lerp(double t, double a, double b)
+{
+    return a + t * (b - a);
+}
+
 void ColorMap(int iteration, double& r, double& g, double& b)
 {
     double t = (double)iteration / maxIterations;
     
     if (t >= 0 && t < 0.16)
     {
+        float r1 = 0;
+        float g1 = 0;
+        float b1 = 0;
+        float r2 = 0;
+        float g2 = 7.0 / 255;
+        float b2 = 100.0 / 255;
+        r = r1 + (t/0.16) * (r2 - r1);
+        g = g1 + (t/0.16) * (g2 - g1);
+        b = b1 + (t/0.16) * (b2 - b1);
         r = 0;
         g = 7.0/255;
         b = 100.0 / 255;
     }
     else if (t >= 0.16 && t < 0.42)
     {
-        r = 32.0 / 255;
-        g = 107.0 / 255;
-        b = 203.0 / 255;
+        float r1 = 0;
+        float g1 = 7.0 / 255;
+        float b1 = 100.0 / 255;
+        float r2 = 32.0 / 255;
+        float g2 = 107.0 / 255;
+        float b2 = 203.0 / 255;
+        r = r1 + ((t-0.16) / 0.42-0.16) * (r2 - r1);
+        g = g1 + ((t - 0.16) / 0.42 - 0.16) * (g2 - g1);
+        b = b1 + ((t - 0.16) / 0.42 - 0.16) * (b2 - b1);
     }
     else if (t >= 0.42 && 4 < 0.6425)
     {
-        r = 237.0 / 255;
-        g = 1;
-        b = 1;
+        float r1 = 32.0 / 255;
+        float g1 = 107.0 / 255;
+        float b1 = 203.0 / 255;
+        float r2 = 237.0 / 255;
+        float g2 = 1;
+        float b2 = 1;
+        r = r1 + ((t - 0.42) / 0.6425 - 0.42) * (r2 - r1);
+        g = g1 + ((t - 0.42) / 0.6425 - 0.42) * (g2 - g1);
+        b = b1 + ((t - 0.42) / 0.6425 - 0.42) * (b2 - b1);
     }
     else if (t >= 0.6425 && t < 0.8575)
     {
-        r = 1;
-        g = 170.0 / 255;
-        b = 0;
+        float r1 = 237.0 / 255;
+        float g1 = 1;
+        float b1 = 1;
+        float r2 = 1;
+        float g2 = 170.0 / 255;
+        float b2 = 0;
+        r = r1 + ((t - 0.6425) / 0.8575 - 0.6425) * (r2 - r1);
+        g = g1 + ((t - 0.6425) / 0.8575 - 0.6425) * (g2 - g1);
+        b = b1 + ((t - 0.6425) / 0.8575 - 0.6425) * (b2 - b1);
     }
     else
     {
-        r = 0;
-        g = 2.0 / 255;
-        b = 0;
+        float r1 = 1;
+        float g1 = 170.0 / 255;
+        float b1 = 0;
+        float r2 = 0;
+        float g2 = 2.0 / 255;
+        float b2 = 0;
+        r = r1 + ((t - 0.8575) / 1 - 0.8575) * (r2 - r1);
+        g = g1 + ((t - 0.8575) / 1 - 0.8575) * (g2 - g1);
+        b = b1 + ((t - 0.8575) / 1 - 0.8575) * (b2 - b1);
     }
 
     return;
