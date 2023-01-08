@@ -5,8 +5,8 @@
 #include <string>
 #include <math.h>
 
-#include <direct.h>
-#define GetCurrentDir _getcwd
+#include <chrono>
+using namespace std::chrono;
 
 #define STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_WRITE_IMPLEMENTATION
@@ -39,7 +39,7 @@ const std::complex<double> I(0, 1);
 //#define HEIGHT 1500
 
 #define WIDTH 2000
-#define HEIGHT 1500
+#define HEIGHT 2000
 
 // square
 /*
@@ -51,10 +51,10 @@ float Y_MAX = -0.035+0.001;
 
 
 // seahorse tail
-//float X_MIN = -0.7435669 - 0.0022878;
-//float X_MAX = -0.7435669 + 0.0022878;
-//float Y_MIN = -0.1314023 - 0.0022878;
-//float Y_MAX = -0.1314023 + 0.0022878;
+//double X_MIN = -0.7435669 - 0.0022878;
+//double X_MAX = -0.7435669 + 0.0022878;
+//double Y_MIN = -0.1314023 - 0.0022878;
+//double Y_MAX = -0.1314023 + 0.0022878;
 
 /*
 float X_MIN = -0.7435669 - 0.00022878;
@@ -63,15 +63,15 @@ float Y_MIN = -0.1314023 - 0.00022878;
 float Y_MAX = -0.1314023 + 0.00022878;
 */
 
-//float X_MIN = -2;
-//float X_MAX = 2;
-//float Y_MIN = -2;
-//float Y_MAX = 2;
-
 float X_MIN = -2;
 float X_MAX = 2;
-float Y_MIN = -1.5;
-float Y_MAX = 1.5;
+float Y_MIN = -2;
+float Y_MAX = 2;
+
+//float X_MIN = -2;
+//float X_MAX = 2;
+//float Y_MIN = -1.5;
+//float Y_MAX = 1.5;
 
 //float X_MIN = -1;
 //float X_MAX = 1;
@@ -120,29 +120,16 @@ double lerp(double t, double a, double b)
 
 void ColorMap(int iteration, double& r, double& g, double& b)
 {
-    double t = (double)iteration / WIDTH;
-    if (t >= 0.499 && t <= 0.501)
-    {
-        float r1 = 32.0 / 255;
-        float g1 = 107.0 / 255;
-        float b1 = 203.0 / 255;
-        float r2 = 237.0 / 255;
-        float g2 = 1;
-        float b2 = 1;
-        //t = 0.6425;
-        r = r1 + ((t - 0.42) / (0.6425 - 0.42)) * (r2 - r1);
-        g = g1 + ((t - 0.42) / (0.6425 - 0.42)) * (g2 - g1);
-        b = b1 + ((t - 0.42) / (0.6425 - 0.42)) * (b2 - b1);
-        return;
-    }
+    double t = (double)iteration / maxIterations;
     if (t >= 0 && t < 0.16)
     {
-        float r1 = 0;
-        float g1 = 0;
-        float b1 = 0;
-        float r2 = 0;
-        float g2 = 7.0 / 255;
-        float b2 = 100.0 / 255;
+        double r1 = 0;
+        double g1 = 7.0 / 255;
+        double b1 = 100.0 / 255;
+        double r2 = 32.0 / 255;
+        double g2 = 107.0 / 255;
+        double b2 = 203.0 / 255;
+
         //t = 0.16;
         r = r1 + (t/0.16) * (r2 - r1);
         g = g1 + (t/0.16) * (g2 - g1);
@@ -150,12 +137,12 @@ void ColorMap(int iteration, double& r, double& g, double& b)
     }
     else if (t >= 0.16 && t < 0.42)
     {
-        float r1 = 0;
-        float g1 = 7.0 / 255;
-        float b1 = 100.0 / 255;
-        float r2 = 32.0 / 255;
-        float g2 = 107.0 / 255;
-        float b2 = 203.0 / 255;
+        double r1 = 32.0 / 255;
+        double g1 = 107.0 / 255;
+        double b1 = 203.0 / 255;
+        double r2 = 237.0 / 255;
+        double g2 = 1;
+        double b2 = 1;
         //t = 0.42;
         r = r1 + ((t - 0.16) / (0.42 - 0.16)) * (r2 - r1);
         g = g1 + ((t - 0.16) / (0.42 - 0.16)) * (g2 - g1);
@@ -163,12 +150,13 @@ void ColorMap(int iteration, double& r, double& g, double& b)
     }
     else if (t >= 0.42 && t < 0.6425)
     {
-        float r1 = 32.0 / 255;
-        float g1 = 107.0 / 255;
-        float b1 = 203.0 / 255;
-        float r2 = 237.0 / 255;
-        float g2 = 1;
-        float b2 = 1;
+        double r1 = 237.0 / 255;
+        double g1 = 1;
+        double b1 = 1;
+        double r2 = 1;
+        double g2 = 170.0 / 255;
+        double b2 = 0;
+
         //t = 0.6425;
         r = r1 + ((t - 0.42) / (0.6425 - 0.42)) * (r2 - r1);
         g = g1 + ((t - 0.42) / (0.6425 - 0.42)) * (g2 - g1);
@@ -176,12 +164,12 @@ void ColorMap(int iteration, double& r, double& g, double& b)
     }
     else if (t >= 0.6425 && t < 0.8575)
     {
-        float r1 = 237.0 / 255;
-        float g1 = 1;
-        float b1 = 1;
-        float r2 = 1;
-        float g2 = 170.0 / 255;
-        float b2 = 0;
+        double r1 = 1;
+        double g1 = 170.0 / 255;
+        double b1 = 0;
+        double r2 = 0;
+        double g2 = 2.0 / 255;
+        double b2 = 0;
        // t = 0.8575;
         r = r1 + ((t - 0.6425) / (0.8575 - 0.6425)) * (r2 - r1);
         g = g1 + ((t - 0.6425) / (0.8575 - 0.6425)) * (g2 - g1);
@@ -189,12 +177,12 @@ void ColorMap(int iteration, double& r, double& g, double& b)
     }
     else
     {
-        float r1 = 1;
-        float g1 = 170.0 / 255;
-        float b1 = 0;
-        float r2 = 0;
-        float g2 = 2 / 255;
-        float b2 = 0;
+        double r1 = 0;
+        double g1 = 2.0 / 255;
+        double b1 = 0;
+        double r2 = 0;
+        double g2 = 7.0 / 255;
+        double b2 = 100.0 / 255;
         //t = 1;
         r = r1 + ((t - 0.8575) / (1 - 0.8575)) * (r2 - r1);
         g = g1 + ((t - 0.8575) / (1 - 0.8575)) * (g2 - g1);
@@ -202,6 +190,16 @@ void ColorMap(int iteration, double& r, double& g, double& b)
     }
 
     return;
+}
+
+void PreComputeColors(vector<vector<double>>& colors)
+{
+    vector<double> color = { 0,0, 0 };
+    for (int i = 0; i < maxIterations; i++)
+    {
+        ColorMap(i, color[0], color[1], color[2]);
+        colors.push_back(color);
+    }
 }
 
 void HSVtoRGB(double& fR, double& fG, double& fB, double& fH, double& fS, double& fV) {
@@ -464,6 +462,9 @@ int main()
     //complex<double> start = complex<double>(x_pos, y_pos);
     complex<double> start = { -0.77146, 0.10119 };
     int totalIterations = 0;
+    auto startTime = high_resolution_clock::now();
+    vector<vector<double>> colors;
+    PreComputeColors(colors);
 
     for (int k = 0; k < kIterations; k++)
     {
@@ -481,14 +482,14 @@ int main()
                 
                 //int iterations = GetIterations(num, start);
                 complex<double> zn = (0, 0);
-                //int iterations = Mandelbrot(num, &zn);
+                int iterations = Mandelbrot(num, &zn);
                 //int iterations = Julia(num, complex<double>(0.281215625, -0.0113825));
                 complex<double> p = { -0.77146, 0.10119 };
                 //int iterations = Julia(num, p);
                 //int iterations = JuliaExponent(num, (double)k/kIterations*2*pi);
                 //vector<double> color = GetColor(iterations, num, start, p, zn);
-                //nums[i][j] = iterations;
-                nums[i][j] = j;
+                nums[i][j] = iterations;
+                //nums[i][j] = j;
                 zns[i][j] = zn;
                 //NumIterationsPerPixel[iterations]++;
                 //vector<double> colorVec = GetVecColor(iterations);
@@ -502,6 +503,8 @@ int main()
         {
             totalIterations += NumIterationsPerPixel[i];
         }
+    
+
         for (int i = 0; i < HEIGHT; i++)
         {
             for (int j = 0; j < WIDTH; j++)
@@ -526,10 +529,10 @@ int main()
                     tIter += (float)NumIterationsPerPixel[k] / totalIterations;
                 */
                 
-                //auto zn = zns[i][j];
-                //float log_zn = log(zn.real() * zn.real() + zn.imag() * zn.imag()) / 2;
-                //float nu = log(log_zn / log(2)) / log(2);
-                //float fIt = iteration + 1 - nu;
+                auto zn = zns[i][j];
+                double log_zn = log(zn.real() * zn.real() + zn.imag() * zn.imag()) / 2;
+                double nu = log(log_zn / log(2)) / log(2);
+                double fIt = iteration + 1 - nu;
                 double s = (double)iteration / maxIterations;
                 //double s1 = (double)floor(fIt) / maxIterations;
                 //double s2 = (double)(floor(fIt)+1) / maxIterations;
@@ -549,9 +552,19 @@ int main()
 
                 vector<double> finalColor = { 0, 0, 0 };
                 double l = 400 + s * (700 - 400);
-                spectral_color(finalColor[0], finalColor[1], finalColor[2], l);
+                //spectral_color(finalColor[0], finalColor[1], finalColor[2], l);
 
-                ColorMap(iteration, finalColor[0], finalColor[1], finalColor[2]);
+                iteration = floor(fIt);
+                vector<double> color1 = { 0, 0, 0 };
+                vector<double> color2 = { 0, 0, 0 };
+                //ColorMap(iteration, color1[0], color1[1], color1[2]);
+                //ColorMap(iteration+1, color2[0], color2[1], color2[2]);
+                color1 = colors[iteration];
+                color2 = colors[iteration + 1];
+                //fIt = floor(fIt);
+                finalColor[0] = lerp(fmod(fIt, 1), color1[0], color2[0]);
+                finalColor[1] = lerp(fmod(fIt, 1), color1[1], color2[1]);
+                finalColor[2] = lerp(fmod(fIt, 1), color1[2], color2[2]);
 
                 //tIter = fmod(pow((pow(((float)iteration / maxIterations), 2) * 255), 1.5), 255);
                // tIter = 0 + fmod(fiteration, 1) * (1 - 0);
@@ -568,9 +581,10 @@ int main()
         fileName.append(std::to_string(k).c_str());
         fileName.append(extension.c_str());
         stbi_write_png(fileName.c_str(), WIDTH, HEIGHT, 3, data.data(), WIDTH * 3);
-        char buff[FILENAME_MAX]; //create string buffer to hold path
-        GetCurrentDir(buff, FILENAME_MAX);
-        string current_working_dir(buff);
-        std::cout << current_working_dir << std::endl;
     }
+    auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<seconds>(stop - startTime);
+
+    cout << duration.count() << endl;
+
 }
