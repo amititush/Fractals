@@ -18,11 +18,6 @@
 //float Y_MIN = -1.12;
 //float Y_MAX = 1.12;
 
-//float X_MIN = -2;
-//float X_MAX = 2;
-//float Y_MIN = -2;
-//float Y_MAX = 2;
-
 //float X_MIN = -0.6884971875 -.0001;
 //float X_MAX = -0.6884971875 + .0001;
 //float Y_MIN = -0.27988465625 - .0001;
@@ -43,8 +38,8 @@ const std::complex<double> I(0, 1);
 //#define WIDTH 2000
 //#define HEIGHT 1500
 
-#define WIDTH 1000
-#define HEIGHT 1000
+#define WIDTH 2000
+#define HEIGHT 2000
 
 // square
 /*
@@ -54,11 +49,24 @@ float Y_MIN = -0.035-0.001;
 float Y_MAX = -0.035+0.001;
 */
 
+
 // seahorse tail
 float X_MIN = -0.7435669 - 0.0022878;
 float X_MAX = -0.7435669 + 0.0022878;
 float Y_MIN = -0.1314023 - 0.0022878;
 float Y_MAX = -0.1314023 + 0.0022878;
+
+/*
+float X_MIN = -0.7435669 - 0.00022878;
+float X_MAX = -0.7435669 + 0.00022878;
+float Y_MIN = -0.1314023 - 0.00022878;
+float Y_MAX = -0.1314023 + 0.00022878;
+*/
+
+//float X_MIN = -2;
+//float X_MAX = 2;
+//float Y_MIN = -2;
+//float Y_MAX = 2;
 
 //float X_MIN = -2;
 //float X_MAX = 2;
@@ -74,7 +82,8 @@ float Y_MAX = -0.1314023 + 0.0022878;
 //#define HEIGHT 185
 
 //int radius = pow(2, 8);
-int radius = 10;
+//double radius = DBL_MAX;
+double radius = 2;
 
 int maxIterations = 1000;
 int kIterations = 1;
@@ -121,12 +130,10 @@ void ColorMap(int iteration, double& r, double& g, double& b)
         float r2 = 0;
         float g2 = 7.0 / 255;
         float b2 = 100.0 / 255;
+        //t = 0.16;
         r = r1 + (t/0.16) * (r2 - r1);
         g = g1 + (t/0.16) * (g2 - g1);
         b = b1 + (t/0.16) * (b2 - b1);
-        r = 0;
-        g = 7.0/255;
-        b = 100.0 / 255;
     }
     else if (t >= 0.16 && t < 0.42)
     {
@@ -136,11 +143,12 @@ void ColorMap(int iteration, double& r, double& g, double& b)
         float r2 = 32.0 / 255;
         float g2 = 107.0 / 255;
         float b2 = 203.0 / 255;
-        r = r1 + ((t-0.16) / 0.42-0.16) * (r2 - r1);
-        g = g1 + ((t - 0.16) / 0.42 - 0.16) * (g2 - g1);
-        b = b1 + ((t - 0.16) / 0.42 - 0.16) * (b2 - b1);
+        //t = 0.42;
+        r = r1 + ((t - 0.16) / (0.42 - 0.16)) * (r2 - r1);
+        g = g1 + ((t - 0.16) / (0.42 - 0.16)) * (g2 - g1);
+        b = b1 + ((t - 0.16) / (0.42 - 0.16)) * (b2 - b1);
     }
-    else if (t >= 0.42 && 4 < 0.6425)
+    else if (t >= 0.42 && t < 0.6425)
     {
         float r1 = 32.0 / 255;
         float g1 = 107.0 / 255;
@@ -148,9 +156,10 @@ void ColorMap(int iteration, double& r, double& g, double& b)
         float r2 = 237.0 / 255;
         float g2 = 1;
         float b2 = 1;
-        r = r1 + ((t - 0.42) / 0.6425 - 0.42) * (r2 - r1);
-        g = g1 + ((t - 0.42) / 0.6425 - 0.42) * (g2 - g1);
-        b = b1 + ((t - 0.42) / 0.6425 - 0.42) * (b2 - b1);
+        //t = 0.6425;
+        r = r1 + ((t - 0.42) / (0.6425 - 0.42)) * (r2 - r1);
+        g = g1 + ((t - 0.42) / (0.6425 - 0.42)) * (g2 - g1);
+        b = b1 + ((t - 0.42) / (0.6425 - 0.42)) * (b2 - b1);
     }
     else if (t >= 0.6425 && t < 0.8575)
     {
@@ -160,9 +169,10 @@ void ColorMap(int iteration, double& r, double& g, double& b)
         float r2 = 1;
         float g2 = 170.0 / 255;
         float b2 = 0;
-        r = r1 + ((t - 0.6425) / 0.8575 - 0.6425) * (r2 - r1);
-        g = g1 + ((t - 0.6425) / 0.8575 - 0.6425) * (g2 - g1);
-        b = b1 + ((t - 0.6425) / 0.8575 - 0.6425) * (b2 - b1);
+       // t = 0.8575;
+        r = r1 + ((t - 0.6425) / (0.8575 - 0.6425)) * (r2 - r1);
+        g = g1 + ((t - 0.6425) / (0.8575 - 0.6425)) * (g2 - g1);
+        b = b1 + ((t - 0.6425) / (0.8575 - 0.6425)) * (b2 - b1);
     }
     else
     {
@@ -170,11 +180,12 @@ void ColorMap(int iteration, double& r, double& g, double& b)
         float g1 = 170.0 / 255;
         float b1 = 0;
         float r2 = 0;
-        float g2 = 2.0 / 255;
+        float g2 = 2 / 255;
         float b2 = 0;
-        r = r1 + ((t - 0.8575) / 1 - 0.8575) * (r2 - r1);
-        g = g1 + ((t - 0.8575) / 1 - 0.8575) * (g2 - g1);
-        b = b1 + ((t - 0.8575) / 1 - 0.8575) * (b2 - b1);
+        //t = 1;
+        r = r1 + ((t - 0.8575) / (1 - 0.8575)) * (r2 - r1);
+        g = g1 + ((t - 0.8575) / (1 - 0.8575)) * (g2 - g1);
+        b = b1 + ((t - 0.8575) / (1 - 0.8575)) * (b2 - b1);
     }
 
     return;
