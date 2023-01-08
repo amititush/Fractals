@@ -39,7 +39,7 @@ const std::complex<double> I(0, 1);
 //#define HEIGHT 1500
 
 #define WIDTH 2000
-#define HEIGHT 2000
+#define HEIGHT 1500
 
 // square
 /*
@@ -51,10 +51,10 @@ float Y_MAX = -0.035+0.001;
 
 
 // seahorse tail
-float X_MIN = -0.7435669 - 0.0022878;
-float X_MAX = -0.7435669 + 0.0022878;
-float Y_MIN = -0.1314023 - 0.0022878;
-float Y_MAX = -0.1314023 + 0.0022878;
+//float X_MIN = -0.7435669 - 0.0022878;
+//float X_MAX = -0.7435669 + 0.0022878;
+//float Y_MIN = -0.1314023 - 0.0022878;
+//float Y_MAX = -0.1314023 + 0.0022878;
 
 /*
 float X_MIN = -0.7435669 - 0.00022878;
@@ -68,10 +68,10 @@ float Y_MAX = -0.1314023 + 0.00022878;
 //float Y_MIN = -2;
 //float Y_MAX = 2;
 
-//float X_MIN = -2;
-//float X_MAX = 2;
-//float Y_MIN = -1.5;
-//float Y_MAX = 1.5;
+float X_MIN = -2;
+float X_MAX = 2;
+float Y_MIN = -1.5;
+float Y_MAX = 1.5;
 
 //float X_MIN = -1;
 //float X_MAX = 1;
@@ -120,8 +120,21 @@ double lerp(double t, double a, double b)
 
 void ColorMap(int iteration, double& r, double& g, double& b)
 {
-    double t = (double)iteration / maxIterations;
-    
+    double t = (double)iteration / WIDTH;
+    if (t >= 0.499 && t <= 0.501)
+    {
+        float r1 = 32.0 / 255;
+        float g1 = 107.0 / 255;
+        float b1 = 203.0 / 255;
+        float r2 = 237.0 / 255;
+        float g2 = 1;
+        float b2 = 1;
+        //t = 0.6425;
+        r = r1 + ((t - 0.42) / (0.6425 - 0.42)) * (r2 - r1);
+        g = g1 + ((t - 0.42) / (0.6425 - 0.42)) * (g2 - g1);
+        b = b1 + ((t - 0.42) / (0.6425 - 0.42)) * (b2 - b1);
+        return;
+    }
     if (t >= 0 && t < 0.16)
     {
         float r1 = 0;
@@ -451,6 +464,7 @@ int main()
     //complex<double> start = complex<double>(x_pos, y_pos);
     complex<double> start = { -0.77146, 0.10119 };
     int totalIterations = 0;
+
     for (int k = 0; k < kIterations; k++)
     {
         data.clear();
@@ -467,15 +481,16 @@ int main()
                 
                 //int iterations = GetIterations(num, start);
                 complex<double> zn = (0, 0);
-                int iterations = Mandelbrot(num, &zn);
+                //int iterations = Mandelbrot(num, &zn);
                 //int iterations = Julia(num, complex<double>(0.281215625, -0.0113825));
                 complex<double> p = { -0.77146, 0.10119 };
                 //int iterations = Julia(num, p);
                 //int iterations = JuliaExponent(num, (double)k/kIterations*2*pi);
                 //vector<double> color = GetColor(iterations, num, start, p, zn);
-                nums[i][j] = iterations;
+                //nums[i][j] = iterations;
+                nums[i][j] = j;
                 zns[i][j] = zn;
-                NumIterationsPerPixel[iterations]++;
+                //NumIterationsPerPixel[iterations]++;
                 //vector<double> colorVec = GetVecColor(iterations);
                 //vector<double> color = GetColor(nums[i][j], num, start, p, zn);
                 //data[dataPos++] = color[0]*255;
