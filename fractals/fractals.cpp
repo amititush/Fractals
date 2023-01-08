@@ -5,6 +5,9 @@
 #include <string>
 #include <math.h>
 
+#include <direct.h>
+#define GetCurrentDir _getcwd
+
 #define STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image.h"
@@ -44,10 +47,10 @@ const std::complex<double> I(0, 1);
 #define HEIGHT 2000
 
 // square
-float X_MIN = -1.25-0.001;
-float X_MAX = -1.25+0.001;
-float Y_MIN = -0.035-0.001;
-float Y_MAX = -0.035+0.001;
+float X_MIN = -1.25-0.01;
+float X_MAX = -1.25+0.01;
+float Y_MIN = -0.035-0.01;
+float Y_MAX = -0.035+0.01;
 
 //float X_MIN = -2;
 //float X_MAX = 2;
@@ -63,7 +66,7 @@ float Y_MAX = -0.035+0.001;
 //#define HEIGHT 185
 
 //int radius = pow(2, 8);
-int radius = 2;
+int radius = 10;
 
 int maxIterations = 1000;
 int kIterations = 1;
@@ -91,6 +94,44 @@ void spectral_color(double& r, double& g, double& b, double l) // RGB <0,1> <- l
     else if ((l >= 585.0) && (l < 639.0)) { t = (l - 585.0) / (639.0 - 585.0); g = 0.84 - (0.84 * t); }
     if ((l >= 400.0) && (l < 475.0)) { t = (l - 400.0) / (475.0 - 400.0); b = +(2.20 * t) - (1.50 * t * t); }
     else if ((l >= 475.0) && (l < 560.0)) { t = (l - 475.0) / (560.0 - 475.0); b = 0.7 - (t)+(0.30 * t * t); }
+}
+
+void ColorMap(int iteration, double& r, double& g, double& b)
+{
+    double t = (double)iteration / maxIterations;
+    
+    if (t >= 0 && t < 0.16)
+    {
+        r = 0;
+        g = 7.0/255;
+        b = 100.0 / 255;
+    }
+    else if (t >= 0.16 && t < 0.42)
+    {
+        r = 32.0 / 255;
+        g = 107.0 / 255;
+        b = 203.0 / 255;
+    }
+    else if (t >= 0.42 && 4 < 0.6425)
+    {
+        r = 237.0 / 255;
+        g = 1;
+        b = 1;
+    }
+    else if (t >= 0.6425 && t < 0.8575)
+    {
+        r = 1;
+        g = 170.0 / 255;
+        b = 0;
+    }
+    else
+    {
+        r = 0;
+        g = 2.0 / 255;
+        b = 0;
+    }
+
+    return;
 }
 
 void HSVtoRGB(double& fR, double& fG, double& fB, double& fH, double& fS, double& fV) {
@@ -438,6 +479,8 @@ int main()
                 double l = 400 + s * (700 - 400);
                 spectral_color(finalColor[0], finalColor[1], finalColor[2], l);
 
+                ColorMap(iteration, finalColor[0], finalColor[1], finalColor[2]);
+
                 //tIter = fmod(pow((pow(((float)iteration / maxIterations), 2) * 255), 1.5), 255);
                // tIter = 0 + fmod(fiteration, 1) * (1 - 0);
                 //data[dataPos++] = (char)(tIter * tIter * tIter * 255);
@@ -453,5 +496,9 @@ int main()
         fileName.append(std::to_string(k).c_str());
         fileName.append(extension.c_str());
         stbi_write_png(fileName.c_str(), WIDTH, HEIGHT, 3, data.data(), WIDTH * 3);
+        char buff[FILENAME_MAX]; //create string buffer to hold path
+        GetCurrentDir(buff, FILENAME_MAX);
+        string current_working_dir(buff);
+        std::cout << current_working_dir << std::endl;
     }
 }
