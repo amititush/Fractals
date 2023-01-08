@@ -13,10 +13,7 @@ using namespace std::chrono;
 #include "stb_image.h"
 #include "stb_image_write.h"
 
-//float X_MIN = -2;
-//float X_MAX = 0.47;
-//float Y_MIN = -1.12;
-//float Y_MAX = 1.12;
+
 
 //float X_MIN = -0.6884971875 -.0001;
 //float X_MAX = -0.6884971875 + .0001;
@@ -38,8 +35,16 @@ const std::complex<double> I(0, 1);
 //#define WIDTH 2000
 //#define HEIGHT 1500
 
-#define WIDTH 2000
-#define HEIGHT 2000
+#define WIDTH 3000
+#define HEIGHT 3000
+
+#define COLORS 16
+
+// mandelbrot
+double X_MIN = -2.25;
+double X_MAX = 0.75;
+double Y_MIN = -1.5;
+double Y_MAX = 1.5;
 
 // square
 /*
@@ -63,10 +68,10 @@ float Y_MIN = -0.1314023 - 0.00022878;
 float Y_MAX = -0.1314023 + 0.00022878;
 */
 
-float X_MIN = -2;
-float X_MAX = 2;
-float Y_MIN = -2;
-float Y_MAX = 2;
+//float X_MIN = -2;
+//float X_MAX = 2;
+//float Y_MIN = -2;
+//float Y_MAX = 2;
 
 //float X_MIN = -2;
 //float X_MAX = 2;
@@ -81,9 +86,9 @@ float Y_MAX = 2;
 //#define WIDTH 320
 //#define HEIGHT 185
 
-//int radius = pow(2, 8);
+double radius = pow(2, 8);
 //double radius = DBL_MAX;
-double radius = 2;
+//double radius = 2;
 
 int maxIterations = 1000;
 int kIterations = 1;
@@ -118,9 +123,9 @@ double lerp(double t, double a, double b)
     return a + t * (b - a);
 }
 
-void ColorMap(int iteration, double& r, double& g, double& b)
+void ColorMap(int iteration, double& r, double& g, double& b, double t)
 {
-    double t = (double)iteration / maxIterations;
+    //double t = (double)iteration / maxIterations;
     if (t >= 0 && t < 0.16)
     {
         double r1 = 0;
@@ -192,12 +197,12 @@ void ColorMap(int iteration, double& r, double& g, double& b)
     return;
 }
 
-void PreComputeColors(vector<vector<double>>& colors)
+void PreComputeColors(vector<vector<double>>& colors, int colorCount)
 {
     vector<double> color = { 0,0, 0 };
-    for (int i = 0; i < maxIterations; i++)
+    for (int i = 0; i < colorCount; i++)
     {
-        ColorMap(i, color[0], color[1], color[2]);
+        ColorMap(i, color[0], color[1], color[2], double(i)/colorCount);
         colors[i] = color;
     }
 }
@@ -464,8 +469,8 @@ int main()
     int totalIterations = 0;
 
     vector<vector<double>> colors;
-    colors.resize(maxIterations);
-    PreComputeColors(colors);
+    colors.resize(COLORS);
+    PreComputeColors(colors, COLORS);
 
     auto startTime = high_resolution_clock::now();
     for (int k = 0; k < kIterations; k++)
@@ -556,13 +561,15 @@ int main()
                 double l = 400 + s * (700 - 400);
                 //spectral_color(finalColor[0], finalColor[1], finalColor[2], l);
 
-                iteration = floor(fIt);
+                iteration = (int)floor(fIt);
+                if (iteration < 0)
+                    iteration = 0;
                 vector<double> color1 = { 0, 0, 0 };
                 vector<double> color2 = { 0, 0, 0 };
                 //ColorMap(iteration, color1[0], color1[1], color1[2]);
                 //ColorMap(iteration+1, color2[0], color2[1], color2[2]);
-                color1 = colors[iteration];
-                color2 = colors[iteration + 1];
+                color1 = colors[iteration % COLORS];
+                color2 = colors[(iteration+1) % COLORS];
                 //fIt = floor(fIt);
                 finalColor[0] = lerp(fmod(fIt, 1), color1[0], color2[0]);
                 finalColor[1] = lerp(fmod(fIt, 1), color1[1], color2[1]);
