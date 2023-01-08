@@ -35,16 +35,16 @@ const std::complex<double> I(0, 1);
 //#define WIDTH 2000
 //#define HEIGHT 1500
 
-#define WIDTH 3000
-#define HEIGHT 3000
+#define WIDTH 2000
+#define HEIGHT 2000
 
 #define COLORS 16
 
 // mandelbrot
-double X_MIN = -2.25;
-double X_MAX = 0.75;
-double Y_MIN = -1.5;
-double Y_MAX = 1.5;
+//double X_MIN = -2.25;
+//double X_MAX = 0.75;
+//double Y_MIN = -1.5;
+//double Y_MAX = 1.5;
 
 // square
 /*
@@ -56,10 +56,10 @@ float Y_MAX = -0.035+0.001;
 
 
 // seahorse tail
-//double X_MIN = -0.7435669 - 0.0022878;
-//double X_MAX = -0.7435669 + 0.0022878;
-//double Y_MIN = -0.1314023 - 0.0022878;
-//double Y_MAX = -0.1314023 + 0.0022878;
+double X_MIN = -0.7435669 - 0.0022878;
+double X_MAX = -0.7435669 + 0.0022878;
+double Y_MIN = -0.1314023 - 0.0022878;
+double Y_MAX = -0.1314023 + 0.0022878;
 
 /*
 float X_MIN = -0.7435669 - 0.00022878;
@@ -593,7 +593,7 @@ int main()
     }
 
     auto stop = high_resolution_clock::now();
-    auto duration = duration_cast<microseconds>(stop - startTime);
+    auto duration = duration_cast<seconds>(stop - startTime);
 
     cout << duration.count() << endl;
 
