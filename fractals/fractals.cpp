@@ -198,7 +198,7 @@ void PreComputeColors(vector<vector<double>>& colors)
     for (int i = 0; i < maxIterations; i++)
     {
         ColorMap(i, color[0], color[1], color[2]);
-        colors.push_back(color);
+        colors[i] = color;
     }
 }
 
@@ -462,10 +462,12 @@ int main()
     //complex<double> start = complex<double>(x_pos, y_pos);
     complex<double> start = { -0.77146, 0.10119 };
     int totalIterations = 0;
-    auto startTime = high_resolution_clock::now();
+
     vector<vector<double>> colors;
+    colors.resize(maxIterations);
     PreComputeColors(colors);
 
+    auto startTime = high_resolution_clock::now();
     for (int k = 0; k < kIterations; k++)
     {
         data.clear();
@@ -582,8 +584,9 @@ int main()
         fileName.append(extension.c_str());
         stbi_write_png(fileName.c_str(), WIDTH, HEIGHT, 3, data.data(), WIDTH * 3);
     }
+
     auto stop = high_resolution_clock::now();
-    auto duration = duration_cast<seconds>(stop - startTime);
+    auto duration = duration_cast<microseconds>(stop - startTime);
 
     cout << duration.count() << endl;
 
