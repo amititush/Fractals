@@ -38,7 +38,7 @@ const std::complex<double> I(0, 1);
 #define WIDTH 2000
 #define HEIGHT 2000
 
-#define COLORS 16
+#define COLORS 64
 
 // mandelbrot
 //double X_MIN = -2.25;
@@ -197,12 +197,89 @@ void ColorMap(int iteration, double& r, double& g, double& b, double t)
     return;
 }
 
-void PreComputeColors(vector<vector<double>>& colors, int colorCount)
+void ColorMapNoBlack(int iteration, double& r, double& g, double& b, double t)
+{
+    //double t = (double)iteration / maxIterations;
+    if (t >= 0 && t < 0.16)
+    {
+        double r1 = 0;
+        double g1 = 7.0 / 255;
+        double b1 = 100.0 / 255;
+        double r2 = 32.0 / 255;
+        double g2 = 107.0 / 255;
+        double b2 = 203.0 / 255;
+
+        //t = 0.16;
+        r = r1 + (t / 0.16) * (r2 - r1);
+        g = g1 + (t / 0.16) * (g2 - g1);
+        b = b1 + (t / 0.16) * (b2 - b1);
+    }
+    else if (t >= 0.16 && t < 0.42)
+    {
+        double r1 = 32.0 / 255;
+        double g1 = 107.0 / 255;
+        double b1 = 203.0 / 255;
+        double r2 = 237.0 / 255;
+        double g2 = 1;
+        double b2 = 1;
+        //t = 0.42;
+        r = r1 + ((t - 0.16) / (0.42 - 0.16)) * (r2 - r1);
+        g = g1 + ((t - 0.16) / (0.42 - 0.16)) * (g2 - g1);
+        b = b1 + ((t - 0.16) / (0.42 - 0.16)) * (b2 - b1);
+    }
+    else if (t >= 0.42 && t < 0.6425)
+    {
+        double r1 = 237.0 / 255;
+        double g1 = 1;
+        double b1 = 1;
+        double r2 = 1;
+        double g2 = 170.0 / 255;
+        double b2 = 0;
+
+        //t = 0.6425;
+        r = r1 + ((t - 0.42) / (0.6425 - 0.42)) * (r2 - r1);
+        g = g1 + ((t - 0.42) / (0.6425 - 0.42)) * (g2 - g1);
+        b = b1 + ((t - 0.42) / (0.6425 - 0.42)) * (b2 - b1);
+    }
+    else if (t >= 0.6425 && t < 0.8575)
+    {
+        double r1 = 1;
+        double g1 = 170.0 / 255;
+        double b1 = 0;
+        double r2 = 0;
+        double g2 = 2.0 / 255;
+        double b2 = 0.5;
+        // t = 0.8575;
+        r = r1 + ((t - 0.6425) / (0.8575 - 0.6425)) * (r2 - r1);
+        g = g1 + ((t - 0.6425) / (0.8575 - 0.6425)) * (g2 - g1);
+        b = b1 + ((t - 0.6425) / (0.8575 - 0.6425)) * (b2 - b1);
+    }
+    else
+    {
+        double r1 = 0;
+        double g1 = 2.0 / 255;
+        double b1 = 0.5;
+        double r2 = 0;
+        double g2 = 7.0 / 255;
+        double b2 = 100.0 / 255;
+        //t = 1;
+        r = r1 + ((t - 0.8575) / (1 - 0.8575)) * (r2 - r1);
+        g = g1 + ((t - 0.8575) / (1 - 0.8575)) * (g2 - g1);
+        b = b1 + ((t - 0.8575) / (1 - 0.8575)) * (b2 - b1);
+    }
+
+    return;
+}
+
+void PreComputeColors(vector<vector<double>>& colors, int colorCount, bool black)
 {
     vector<double> color = { 0,0, 0 };
     for (int i = 0; i < colorCount; i++)
     {
-        ColorMap(i, color[0], color[1], color[2], double(i)/colorCount);
+        if (black)
+            ColorMap(i, color[0], color[1], color[2], double(i)/colorCount);
+        else
+            ColorMapNoBlack(i, color[0], color[1], color[2], double(i) / colorCount);
         colors[i] = color;
     }
 }
@@ -455,9 +532,11 @@ int main()
 {
     vector<char> data;
     vector<vector<int>> nums;
+    vector<vector<int>> pixels;
     vector<vector<complex<double>>> zns;
     nums.resize(HEIGHT);
     zns.resize(HEIGHT);
+    pixels.resize(HEIGHT);
     vector<int> NumIterationsPerPixel;
     NumIterationsPerPixel.resize(maxIterations+1);
     data.resize(WIDTH * HEIGHT * 3);
@@ -470,7 +549,7 @@ int main()
 
     vector<vector<double>> colors;
     colors.resize(COLORS);
-    PreComputeColors(colors, COLORS);
+    PreComputeColors(colors, COLORS, false);
 
     auto startTime = high_resolution_clock::now();
     for (int k = 0; k < kIterations; k++)
@@ -483,20 +562,22 @@ int main()
             std::cout << "Starting row: " << i << std::endl;
             nums[i].resize(WIDTH);
             zns[i].resize(WIDTH);
+            pixels[i].resize(WIDTH);
             for (int j = 0; j < WIDTH; j++)
             {
                 complex<double> num = complex<double>(X_MIN + (double)j / WIDTH * (X_MAX - X_MIN), Y_MIN + (double)i / HEIGHT * (Y_MAX - Y_MIN));
                 
                 //int iterations = GetIterations(num, start);
                 complex<double> zn = (0, 0);
-                int iterations = Mandelbrot(num, &zn);
-                //int iterations = Julia(num, complex<double>(0.281215625, -0.0113825));
+                int iterations = 0;
+                iterations = Mandelbrot(num, &zn);
+                //iterations = Julia(num, complex<double>(0.281215625, -0.0113825));
                 complex<double> p = { -0.77146, 0.10119 };
-                //int iterations = Julia(num, p);
-                //int iterations = JuliaExponent(num, (double)k/kIterations*2*pi);
+                //iterations = Julia(num, p);
+                //iterations = JuliaExponent(num, (double)k/kIterations*2*pi);
                 //vector<double> color = GetColor(iterations, num, start, p, zn);
                 nums[i][j] = iterations;
-                //nums[i][j] = j;
+                pixels[i][j] = j;
                 zns[i][j] = zn;
                 //NumIterationsPerPixel[iterations]++;
                 //vector<double> colorVec = GetVecColor(iterations);
@@ -518,7 +599,8 @@ int main()
             {
                 
                 int iteration = nums[i][j];
-                if (iteration == maxIterations)
+                int pixel = pixels[i][j];
+                if (iteration == maxIterations && true)
                 {
                     data[dataPos++] = 0;
                     data[dataPos++] = 0;
@@ -574,6 +656,9 @@ int main()
                 finalColor[0] = lerp(fmod(fIt, 1), color1[0], color2[0]);
                 finalColor[1] = lerp(fmod(fIt, 1), color1[1], color2[1]);
                 finalColor[2] = lerp(fmod(fIt, 1), color1[2], color2[2]);
+
+                int interval = WIDTH / COLORS;
+                //finalColor = colors[(pixel / interval)%32];
 
                 //tIter = fmod(pow((pow(((float)iteration / maxIterations), 2) * 255), 1.5), 255);
                // tIter = 0 + fmod(fiteration, 1) * (1 - 0);
